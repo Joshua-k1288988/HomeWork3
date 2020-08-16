@@ -181,6 +181,11 @@ $(function () {
         }
     }
     
+    $("#newItem").on("click", function(){
+        $("#newsModal").modal({backdrop: "static"});
+        $("#titleTextBox").val("");
+        $("#ymdTextBox").val("");
+    })
 
 
 
