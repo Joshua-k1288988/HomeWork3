@@ -154,6 +154,9 @@ $(function () {
     ];
 
     // 練習與任務:
+
+    var countinde = -1;
+
     getdata();
     function getdata(){
         $.ajax({
@@ -191,29 +194,55 @@ $(function () {
                 getdata();
             })
         })
+
+        $(".editItem").on("click", function(){
+            $("#newsModal").modal({backdrop: "static"});
+            var inde = $(this).closest("li").index();
+            // alert(inde);
+            $("#titleTextBox").prop("value", newsList[inde].title);
+            $("#ymdTextBox").val(newsList[inde].ymd);
+            countinde = inde; // 用來判斷要做新增還是修改
+        })
     }
     
     $("#newItem").on("click", function(){
         $("#newsModal").modal({backdrop: "static"});
         $("#titleTextBox").val("");
         $("#ymdTextBox").val("");
+        countinde = -1;  // <--判斷要做新增還是修改
     })
 
     $("#okButton").on("click" , function(){
         $("#newsModal").modal("hide");
-        let datapost = {
-            title: $("#titleTextBox").prop("value"),
-            ymd: $("#ymdTextBox").val()
+        if(countinde >= 0){  // 如果 大於等於0 就做修改
+            newsList[countinde].title = $("#titleTextBox").prop("value");
+            newsList[countinde].ymd = $("#ymdTextBox").val();
+            // alert(newsList[countinde].title  + "  &  " + newsList[countinde].ymd )
+            $.ajax({
+                type: "put",
+                url: "/home/news",
+                contentType: "application/JSON",
+                data: JSON.stringify(newsList[countinde])
+            }).then(function () {
+                getdata();
+            })
+        }
+        else{ // 小於0就做新增
+            let datapost = {
+                title: $("#titleTextBox").prop("value"),
+                ymd: $("#ymdTextBox").val()
+            }
+
+            $.ajax({
+                type: "post",
+                url: "/home/news",
+                contentType: "application/JSON",
+                data: JSON.stringify(datapost)
+            }).then(function () {
+                getdata();
+            })
         }
 
-        $.ajax({
-            type: "post",
-            url: "/home/news",
-            contentType: "application/JSON",
-            data: JSON.stringify(datapost)
-        }).then(function(){
-            getdata();
-        })
     })
 
 
