@@ -187,6 +187,23 @@ $(function () {
         $("#ymdTextBox").val("");
     })
 
+    $("#okButton").on("click" , function(){
+        $("#newsModal").modal("hide");
+        let datapost = {
+            title: $("#titleTextBox").prop("value"),
+            ymd: $("#ymdTextBox").val()
+        }
+
+        $.ajax({
+            type: "post",
+            url: "/home/news",
+            contentType: "application/JSON",
+            data: JSON.stringify(datapost)
+        }).then(function(){
+            getdata();
+        })
+    })
+
 
 
 
